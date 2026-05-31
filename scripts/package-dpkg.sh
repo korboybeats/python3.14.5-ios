@@ -27,6 +27,23 @@ build_deb() {
   cp -a "$STAGE/usr" "$PKGROOT${prefix}/usr"
   cp -a "$STAGE/etc" "$PKGROOT${prefix}/etc" 2>/dev/null || true
 
+  if [ "$arch" = "iphoneos-arm64e" ]; then
+    mv "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/local/bin/python3.14.bin"
+    cat > "$PKGROOT/usr/local/bin/python3.14" <<'EOF'
+#!/bin/sh
+if [ -n "${CFFIXED_USER_HOME:-}" ]; then
+  jbroot="${CFFIXED_USER_HOME%/var/root}"
+  if [ -d "$jbroot/usr/local/lib/python3.14" ]; then
+    export PYTHONHOME="$jbroot/usr/local"
+  fi
+fi
+exec /usr/local/bin/python3.14.bin "$@"
+EOF
+    chmod 0755 "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/local/bin/python3.14.bin"
+    mkdir -p "$PKGROOT/usr/bin"
+    ln -sf /usr/local/bin/python3.14 "$PKGROOT/usr/bin/python3.14"
+  fi
+
   INSTALLED_SIZE="$(du -sk "$PKGROOT${prefix}/usr" | awk '{print $1}')"
 
   sed -e "s#\${PY_VER}#${PY_VER}#g" \
