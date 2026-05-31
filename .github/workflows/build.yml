@@ -31,6 +31,7 @@ jobs:
           echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
           echo "/opt/homebrew/sbin" >> "$GITHUB_PATH"
           /opt/homebrew/bin/brew --version
+          /opt/homebrew/bin/python3.14 --version
           xcrun --sdk iphoneos --show-sdk-version
 
       - name: Discover SDK version
@@ -58,12 +59,6 @@ jobs:
         run: |
           bash scripts/install-build-tools.sh
 
-      - name: Set up Python 3.14 for host build
-        id: py
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.14'
-
       - name: Build dependencies
         run: |
           set -euxo pipefail
@@ -77,7 +72,7 @@ jobs:
 
       - name: Build Python 3.14 for iOS
         env:
-          PYTHON_FOR_BUILD: ${{ steps.py.outputs.python-path }}
+          PYTHON_FOR_BUILD: /opt/homebrew/bin/python3.14
         run: |
           set -euxo pipefail
           bash scripts/build-python.sh
