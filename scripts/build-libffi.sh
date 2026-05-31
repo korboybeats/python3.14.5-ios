@@ -34,6 +34,11 @@ cd "libffi-${LIBFFI_VER}"
   --disable-shared \
   --enable-static
 
+# Apple clang 17 accepts the configure CFI probe but rejects libffi 3.4.4's
+# generated AArch64 CFI directives for the iOS target.
+find . -name fficonfig.h -exec perl -0pi -e \
+  's/#define HAVE_AS_CFI_PSEUDO_OP 1/\/\* #undef HAVE_AS_CFI_PSEUDO_OP \*\//g' {} +
+
 make -j"${JOBS}"
 make install DESTDIR="$DEPS/libffi-ios"
 
