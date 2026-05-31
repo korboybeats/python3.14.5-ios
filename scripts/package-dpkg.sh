@@ -46,6 +46,8 @@ if [ -n "${CFFIXED_USER_HOME:-}" ]; then
     export PYTHONHOME="$jbroot/usr/local"
     export PYTHONEXECUTABLE="$jbroot/usr/local/bin/python3.14.bin"
     export PATH="$jbroot/usr/local/bin:$jbroot/usr/bin:$jbroot/bin:$PATH"
+    export SSL_CERT_FILE="$jbroot/usr/local/ssl/cert.pem"
+    export SSL_CERT_DIR="$jbroot/usr/local/ssl/certs"
   fi
 fi
 exec /usr/local/bin/python3.14.bin "$@"
