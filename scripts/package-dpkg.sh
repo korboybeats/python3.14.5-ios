@@ -32,16 +32,18 @@ build_deb() {
     cat > "$PKGROOT/usr/local/bin/python3.14" <<'EOF'
 #!/bin/sh
 if [ -n "${CFFIXED_USER_HOME:-}" ]; then
-  jbroot="${CFFIXED_USER_HOME%/var/root}"
+  jbroot="/private${CFFIXED_USER_HOME%/var/root}"
   if [ -d "$jbroot/usr/local/lib/python3.14" ]; then
     export PYTHONHOME="$jbroot/usr/local"
+    export PYTHONEXECUTABLE="$jbroot/usr/local/bin/python3.14.bin"
+    export PATH="$jbroot/usr/local/bin:$jbroot/usr/bin:$jbroot/bin:$PATH"
   fi
 fi
 exec /usr/local/bin/python3.14.bin "$@"
 EOF
     chmod 0755 "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/local/bin/python3.14.bin"
     mkdir -p "$PKGROOT/usr/bin"
-    ln -sf /usr/local/bin/python3.14 "$PKGROOT/usr/bin/python3.14"
+    cp "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/bin/python3.14"
   fi
 
   INSTALLED_SIZE="$(du -sk "$PKGROOT${prefix}/usr" | awk '{print $1}')"
