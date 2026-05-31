@@ -55,6 +55,9 @@ EOF
     chmod 0755 "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/local/bin/python3.14.bin"
     mkdir -p "$PKGROOT/usr/bin"
     cp "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/bin/python3.14"
+  else
+    mkdir -p "$PKGROOT${prefix}/usr/bin"
+    ln -sf ../local/bin/python3.14 "$PKGROOT${prefix}/usr/bin/python3.14"
   fi
 
   INSTALLED_SIZE="$(du -sk "$PKGROOT${prefix}/usr" | awk '{print $1}')"
