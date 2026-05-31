@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Script: package-dpkg.sh
-# Purpose: Package staged files into rootful and rootless .deb packages.
+# Purpose: Package staged files into rootless and RootHide .deb packages.
 # ==============================================================================
 
 set -euxo pipefail
@@ -14,14 +14,15 @@ CHANGELOG_FILE="$REPO_ROOT/debian/changelog"
 COPYRIGHT_FILE="$REPO_ROOT/debian/copyright"
 
 build_deb() {
-  local arch="$1"    # "iphoneos-arm" or "iphoneos-arm64"
-  local prefix="$2"  # "" or "/var/jb"
+  local arch="$1"    # "iphoneos-arm64" or "iphoneos-arm64e"
+  local prefix="$2"  # "/var/jb" for rootless, "" for RootHide
 
   local PKGROOT="$WORKDIR/pkgroot-${arch}"
   rm -rf "$PKGROOT"
   mkdir -p "$PKGROOT/DEBIAN"
+  chmod 0755 "$PKGROOT" "$PKGROOT/DEBIAN"
 
-  # Copy staged files into package root with correct prefix
+  # Rootless debs carry /var/jb paths. RootHide debs carry native jbroot paths.
   mkdir -p "$PKGROOT${prefix}"
   cp -a "$STAGE/usr" "$PKGROOT${prefix}/usr"
   cp -a "$STAGE/etc" "$PKGROOT${prefix}/etc" 2>/dev/null || true
@@ -48,8 +49,8 @@ build_deb() {
   echo "Success: Package built at $WORKDIR/$OUTPUT"
 }
 
-# Rootful (iphoneos-arm, installs to /)
-build_deb "iphoneos-arm" ""
-
 # Rootless (iphoneos-arm64, installs to /var/jb)
 build_deb "iphoneos-arm64" "/var/jb"
+
+# RootHide (iphoneos-arm64e, installs to native jbroot paths)
+build_deb "iphoneos-arm64e" ""

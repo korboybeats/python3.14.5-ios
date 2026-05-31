@@ -1,14 +1,14 @@
-# Python 3.14.3 for iOS
+# Python 3.14.5 for iOS
 
-[![Build Status](https://github.com/korboybeats/python3.14.3-ios/actions/workflows/build.yml/badge.svg)](https://github.com/korboybeats/python3.14.3-ios/actions)
-[![License](https://img.shields.io/github/license/korboybeats/python3.14.3-ios)](LICENSE)
+[![Build Status](https://github.com/korboybeats/python3.14.5-ios/actions/workflows/build.yml/badge.svg)](https://github.com/korboybeats/python3.14.5-ios/actions)
+[![License](https://img.shields.io/github/license/korboybeats/python3.14.5-ios)](LICENSE)
 [![iOS](https://img.shields.io/badge/iOS-15.0%2B-black?logo=apple)](https://apple.com)
 
-Cross-compiled **Python 3.14.3** for jailbroken iOS devices. Produces rootful and rootless `.deb` packages via GitHub Actions CI.
+Cross-compiled **Python 3.14.5** for jailbroken iOS devices. Produces rootless and RootHide `.deb` packages via GitHub Actions CI.
 
 ## Features
 
-- **Python 3.14.3** with full standard library
+- **Python 3.14.5** with full standard library
 - **SSL/TLS** via OpenSSL 3.2.3
 - **ctypes/FFI** via libffi 3.4.4
 - **lzma** compression via xz/liblzma 5.6.4
@@ -22,15 +22,15 @@ Cross-compiled **Python 3.14.3** for jailbroken iOS devices. Produces rootful an
 
 ## Installation
 
-Download the latest `.deb` from [Releases](https://github.com/korboybeats/python3.14.3-ios/actions) (Actions artifacts).
+Download the latest `.deb` from [Releases](https://github.com/korboybeats/python3.14.5-ios/actions) (Actions artifacts).
 
-- **Rootless** (Dopamine, etc.): `com.korboy.python314_3.14.3_iphoneos-arm64.deb`
-- **Rootful** (unc0ver, etc.): `com.korboy.python314_3.14.3_iphoneos-arm.deb`
+- **Rootless** (Dopamine, etc.): `com.korboy.python314_3.14.5_iphoneos-arm64.deb`
+- **RootHide** (Dopamine-RootHide, etc.): `com.korboy.python314_3.14.5_iphoneos-arm64e.deb`
 
 Install via terminal:
 
 ```bash
-dpkg -i com.korboy.python314_3.14.3_iphoneos-arm64.deb
+dpkg -i com.korboy.python314_3.14.5_iphoneos-arm64.deb
 ```
 
 ### Post-Installation
@@ -53,7 +53,7 @@ python3.14 -c "import lzma, bz2, curses, dbm, ctypes, compression.zstd"
 ### GitHub Actions (recommended)
 
 1. Fork or clone the repo
-2. Go to Actions > "Build Python 3.14.3 for iOS" > Run workflow
+2. Go to Actions > "Build Python 3.14.5 for iOS" > Run workflow
 3. Download the `.deb` artifacts when complete
 
 ### Local Build (macOS)
@@ -61,10 +61,10 @@ python3.14 -c "import lzma, bz2, curses, dbm, ctypes, compression.zstd"
 Requires Xcode Command Line Tools and Homebrew.
 
 ```bash
-git clone https://github.com/korboybeats/python3.14.3-ios.git
-cd python3.14.3-ios
+git clone https://github.com/korboybeats/python3.14.5-ios.git
+cd python3.14.5-ios
 
-export PY_VER=3.14.3
+export PY_VER=3.14.5
 export LIBFFI_VER=3.4.4
 export OPENSSL_VER=3.2.3
 export XZ_VER=5.6.4
@@ -93,8 +93,8 @@ scripts/
   build-zstd.sh          # Cross-compile zstd 1.5.6 for iOS
   build-ncurses.sh       # Cross-compile ncurses 6.5 for iOS
   build-gdbm.sh          # Cross-compile gdbm 1.24 for iOS
-  build-python.sh        # Cross-compile CPython 3.14.3 for iOS
-  package-dpkg.sh        # Package rootful + rootless .deb
+  build-python.sh        # Cross-compile CPython 3.14.5 for iOS
+  package-dpkg.sh        # Package rootless + RootHide .deb
   entitlements.plist     # iOS code signing entitlements
 debian/
   control.in             # Package metadata template
