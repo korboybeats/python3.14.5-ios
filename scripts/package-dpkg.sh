@@ -27,6 +27,15 @@ build_deb() {
   cp -a "$STAGE/usr" "$PKGROOT${prefix}/usr"
   cp -a "$STAGE/etc" "$PKGROOT${prefix}/etc" 2>/dev/null || true
 
+  mkdir -p "$PKGROOT${prefix}/usr/local/ssl"
+  if [ "$arch" = "iphoneos-arm64e" ]; then
+    ln -sf /etc/ssl/cert.pem "$PKGROOT/usr/local/ssl/cert.pem"
+    ln -sf /etc/ssl/certs "$PKGROOT/usr/local/ssl/certs"
+  else
+    ln -sf /var/jb/etc/ssl/cert.pem "$PKGROOT${prefix}/usr/local/ssl/cert.pem"
+    ln -sf /var/jb/etc/ssl/certs "$PKGROOT${prefix}/usr/local/ssl/certs"
+  fi
+
   if [ "$arch" = "iphoneos-arm64e" ]; then
     mv "$PKGROOT/usr/local/bin/python3.14" "$PKGROOT/usr/local/bin/python3.14.bin"
     cat > "$PKGROOT/usr/local/bin/python3.14" <<'EOF'
