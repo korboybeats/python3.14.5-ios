@@ -24,7 +24,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          git init .
+          git remote remove origin 2>/dev/null || true
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --no-tags --prune --depth=1 origin "${GITHUB_SHA}"
+          git checkout --force FETCH_HEAD
+          git clean -ffdx -e work/deps/
 
       - name: Configure Mac mini toolchain
         run: |
@@ -38,22 +47,6 @@ jobs:
         id: sdk
         run: |
           echo "version=$(xcrun --sdk iphoneos --show-sdk-version)" >> "$GITHUB_OUTPUT"
-
-      - name: Restore deps cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            work/deps/openssl-ios
-            work/deps/libffi-ios
-            work/deps/xz-ios
-            work/deps/bzip2-ios
-            work/deps/zstd-ios
-            work/deps/ncurses-ios
-            work/deps/gdbm-ios
-          key: ios-${{ runner.os }}-sdk-${{ steps.sdk.outputs.version }}-openssl-${{ env.OPENSSL_VER }}-libffi-${{ env.LIBFFI_VER }}-xz-${{ env.XZ_VER }}-bz2-${{ env.BZ2_VER }}-zstd-${{ env.ZSTD_VER }}-ncurses-${{ env.NCURSES_VER }}-gdbm-${{ env.GDBM_VER }}-hash-${{ hashFiles('scripts/*.sh', '.github/workflows/build.yml') }}
-          restore-keys: |
-            ios-${{ runner.os }}-sdk-${{ steps.sdk.outputs.version }}-openssl-${{ env.OPENSSL_VER }}-libffi-${{ env.LIBFFI_VER }}-xz-${{ env.XZ_VER }}-
-            ios-${{ runner.os }}-sdk-${{ steps.sdk.outputs.version }}-
 
       - name: Install build tools
         run: |
@@ -82,14 +75,12 @@ jobs:
           set -euxo pipefail
           bash scripts/package-dpkg.sh
 
-      - name: Upload rootless .deb
-        uses: actions/upload-artifact@v4
-        with:
-          name: com.korboy.python314_${{ env.PY_VER }}_iphoneos-arm64
-          path: work/com.korboy.python314_${{ env.PY_VER }}_iphoneos-arm64.deb
-
-      - name: Upload RootHide .deb
-        uses: actions/upload-artifact@v4
-        with:
-          name: com.korboy.python314_${{ env.PY_VER }}_iphoneos-arm64e
-          path: work/com.korboy.python314_${{ env.PY_VER }}_iphoneos-arm64e.deb
+      - name: Save artifacts on Mac mini
+        run: |
+          set -euxo pipefail
+          ARTIFACT_DIR="/Users/tgm/actions-runner-python3145/artifacts/python3.14.5-ios/${GITHUB_RUN_ID}"
+          rm -rf "$ARTIFACT_DIR"
+          mkdir -p "$ARTIFACT_DIR"
+          cp "work/com.korboy.python314_${PY_VER}_iphoneos-arm64.deb" "$ARTIFACT_DIR/"
+          cp "work/com.korboy.python314_${PY_VER}_iphoneos-arm64e.deb" "$ARTIFACT_DIR/"
+          shasum -a 256 "$ARTIFACT_DIR"/*.deb
