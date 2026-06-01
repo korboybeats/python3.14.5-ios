@@ -6,6 +6,8 @@ Priority: optional
 Architecture: iphoneos-arm64
 Maintainer: Korboy <korboybeats@gmail.com>
 Installed-Size: ${INSTALLED_SIZE}
+Conflicts: xyz.cypwn.python314, com.korboy.python3.14
+Replaces: xyz.cypwn.python314, com.korboy.python3.14
 Description: Python ${PY_VER} for jailbroken iOS.
  - Full interpreter with standard library, SSL/TLS, ctypes, compression (lzma, bz2, zstd), curses, and dbm/gdbm. Multi-version safe.
  - Install pip: python3.14 -m ensurepip
